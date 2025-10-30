@@ -14,7 +14,7 @@ class ChatServer:
         self.server_socket = None
         self.running = False
         
-        # 🤖 CHATGPT API SETUP - USING ENVIRONMENT VARIABLE
+        # HATGPT API SETUP - USING ENVIRONMENT VARIABLE
         self.openai_client = openai.OpenAI(
             api_key=os.getenv("OPENAI_API_KEY")
         )
@@ -31,10 +31,10 @@ class ChatServer:
             self.server_socket.listen(10)
             self.running = True
             
-            print(f"🟢 WhatsApp Chat Server started on {self.host}:{self.port}")
-            print(f"🤖 ChatGPT integration: READY")
-            print(f"⏰ Server time: {datetime.now().strftime('%H:%M:%S')}")
-            print("📱 Waiting for client connections...")
+            print(f" WhatsApp Chat Server started on {self.host}:{self.port}")
+            print(f" ChatGPT integration: READY")
+            print(f" Server time: {datetime.now().strftime('%H:%M:%S')}")
+            print(" Waiting for client connections...")
             print("-" * 60)
             
             while self.running:
@@ -51,11 +51,11 @@ class ChatServer:
                     
                 except socket.error:
                     if self.running:
-                        print("❌ Error accepting connection")
+                        print(" Error accepting connection")
                     break
                     
         except Exception as e:
-            print(f"❌ Server error: {e}")
+            print(f" Server error: {e}")
         finally:
             self.cleanup()
             
@@ -71,12 +71,12 @@ class ChatServer:
                     message = json.loads(data)
                     self.process_message(conn, addr, message)
                 except json.JSONDecodeError:
-                    print(f"❌ Invalid JSON from {addr}")
+                    print(f" Invalid JSON from {addr}")
                     
         except ConnectionResetError:
-            print(f"🔌 Client {addr} disconnected unexpectedly")
+            print(f" Client {addr} disconnected unexpectedly")
         except Exception as e:
-            print(f"❌ Error handling client {addr}: {e}")
+            print(f" Error handling client {addr}: {e}")
         finally:
             self.remove_client(conn, addr)
             
@@ -93,7 +93,7 @@ class ChatServer:
         elif msg_type == 'leave':
             self.handle_leave(conn, addr, message)
         else:
-            print(f"❓ Unknown message type from {addr}: {msg_type}")
+            print(f" Unknown message type from {addr}: {msg_type}")
             
     def handle_join(self, conn, addr, message):
         """Handle client joining the chat"""
@@ -106,8 +106,8 @@ class ChatServer:
             'joined_at': time.time()
         }
         
-        print(f"✅ {username} joined from {addr}")
-        print(f"📊 Active clients: {len(self.clients)}")
+        print(f" {username} joined from {addr}")
+        print(f" Active clients: {len(self.clients)}")
         
         # Send join confirmation to the client
         response = {
@@ -137,7 +137,7 @@ class ChatServer:
         chat_text = message.get('message', '')
         server_timestamp = time.time()
         
-        print(f"💬 [{datetime.fromtimestamp(server_timestamp).strftime('%H:%M:%S')}] {username}: {chat_text}")
+        print(f" [{datetime.fromtimestamp(server_timestamp).strftime('%H:%M:%S')}] {username}: {chat_text}")
         
         # First, broadcast the user's message to all other clients
         user_broadcast_msg = {
@@ -168,7 +168,7 @@ class ChatServer:
         }
         self.broadcast_message(chatgpt_broadcast_msg)
         
-        print(f"🤖 ChatGPT responded: {gpt_response[:50]}...")
+        print(f" ChatGPT responded: {gpt_response[:50]}...")
         
     def get_chatgpt_response(self, user_message, username):
         """Get response from ChatGPT API"""
@@ -192,12 +192,12 @@ class ChatServer:
             )
             
             gpt_reply = response.choices[0].message.content.strip()
-            print(f"✅ ChatGPT response received: {len(gpt_reply)} characters")
+            print(f" ChatGPT response received: {len(gpt_reply)} characters")
             return gpt_reply
             
         except Exception as e:
             error_msg = str(e)
-            print(f"❌ ChatGPT API Error: {error_msg}")
+            print(f" ChatGPT API Error: {error_msg}")
             
             if "api_key" in error_msg.lower() or "authentication" in error_msg.lower():
                 return f"Sorry {username}, I need my API key to be configured! 🔑 Please check the server setup."
@@ -225,12 +225,12 @@ class ChatServer:
         
         if conn in self.clients:
             username = self.clients[conn]['username']
-            print(f"🕐 Clock sync request from {username} at {addr}")
+            print(f" Clock sync request from {username} at {addr}")
             
     def handle_leave(self, conn, addr, message):
         if conn in self.clients:
             username = self.clients[conn]['username']
-            print(f"👋 {username} left the chat")
+            print(f" {username} left the chat")
             
             notification = {
                 'type': 'user_left',
@@ -248,7 +248,7 @@ class ChatServer:
             json_message = json.dumps(message)
             conn.send(json_message.encode('utf-8'))
         except Exception as e:
-            print(f"❌ Error sending to client: {e}")
+            print(f" Error sending to client: {e}")
             
     def broadcast_message(self, message, exclude=None):
         disconnected_clients = []
@@ -270,10 +270,10 @@ class ChatServer:
             if conn in self.clients:
                 self.clients.pop(conn)
             conn.close()
-            print(f"❌ Client {addr} removed")
-            print(f"📊 Active clients: {len(self.clients)}")
+            print(f" Client {addr} removed")
+            print(f" Active clients: {len(self.clients)}")
         except Exception as e:
-            print(f"❌ Error removing client {addr}: {e}")
+            print(f" Error removing client {addr}: {e}")
             
     def cleanup(self):
         print("\n🔄 Shutting down server...")
@@ -289,7 +289,7 @@ class ChatServer:
         if self.server_socket:
             self.server_socket.close()
             
-        print("✅ Server shutdown complete")
+        print(" Server shutdown complete")
         
     def get_server_stats(self):
         return {
@@ -305,8 +305,8 @@ if __name__ == "__main__":
     try:
         server.start_server()
     except KeyboardInterrupt:
-        print("\n⚠️ Server interrupted by user")
+        print("\n Server interrupted by user")
     except Exception as e:
-        print(f"❌ Unexpected error: {e}")
+        print(f" Unexpected error: {e}")
     finally:
         server.cleanup()
