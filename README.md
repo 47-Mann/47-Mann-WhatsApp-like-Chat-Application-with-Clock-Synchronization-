@@ -43,3 +43,15 @@ python3 client.py
 Or, to test multiple clients:
 
 python3 multi_client_launcher-2.py
+
+## Concept
+
+This project demonstrates:
+
+Client-server communication via TCP sockets
+
+Thread-based concurrency for handling simultaneous clients
+
+Clock synchronization using Cristian’s algorithm
+
+GUI chat windows implemented with Tkinter
